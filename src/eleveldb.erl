@@ -55,11 +55,15 @@
 -include_lib("eunit/include/eunit.hrl").
 -endif.
 
+-define(TIMEOUT, 1000 * 60). %% whole minute
+
 %% This cannot be a separate function. Code must be inline to trigger
 %% Erlang compiler's use of optimized selective receive.
 -define(WAIT_FOR_REPLY(Ref),
         receive {Ref, Reply} ->
                 Reply
+        after ?TIMEOUT ->
+            exit(eleveldb_timeout)
         end).
 
 -spec init() -> ok | {error, any()}.
